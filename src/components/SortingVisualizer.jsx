@@ -1,15 +1,21 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const SortingVisualizer = ({ array, activeBars }) => {
+const SortingVisualizer = ({ array, activeBars, sortedIndices }) => {
   return (
     <div className="flex items-end justify-center px-4 py-6 gap-[2px] max-w-6xl mx-auto h-[70vh]">
       <AnimatePresence>
         {array.map((value, idx) => {
           const isActive = activeBars.includes(idx);
-          const barColor = isActive
-            ? "bg-yellow-400" // or red/yellow during comparison
-            : "bg-gradient-to-t from-green-400 to-green-300";
+          const isSorted = sortedIndices.includes(idx);
+
+          let barColor = "bg-gradient-to-t from-green-400 to-green-300"; // default
+
+          if (isSorted) {
+            barColor = "bg-purple-500";
+          } else if (isActive) {
+            barColor = "bg-yellow-400";
+          }
 
           return (
             <motion.div

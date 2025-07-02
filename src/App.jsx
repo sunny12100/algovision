@@ -5,18 +5,22 @@ import { getBubbleSortAnimations } from "./algorithms/bubbleSort";
 import { getSelectionSortAnimations } from "./algorithms/selectionSort";
 import { getInsertionSortAnimations } from "./algorithms/insertionSort";
 import { getMergeSortAnimations } from "./algorithms/mergeSort";
+import { getQuickSortAnimations } from "./algorithms/quickSort";
+import { getHeapSortAnimations } from "./algorithms/heapSort";
 
 const App = () => {
   const [array, setArray] = useState([]);
   const [speed, setSpeed] = useState(1000); // in ms
   const [selectedAlgo, setSelectedAlgo] = useState("bubble");
   const [activeBars, setActiveBars] = useState([]);
+  const [sortedIndices, setSortedIndices] = useState([]);
 
   const generateArray = () => {
-    const newArr = Array.from({ length: 8 }, () =>
+    const newArr = Array.from({ length: 10 }, () =>
       Math.floor(Math.random() * 300 + 10)
     );
     setArray(newArr);
+    setSortedIndices([]);
   };
 
   useEffect(() => {
@@ -40,6 +44,12 @@ const App = () => {
       case "merge":
         animations = getMergeSortAnimations(arrayCopy);
         break;
+      case "quick":
+        animations = getQuickSortAnimations(arrayCopy);
+        break;
+      case "heap":
+        animations = getHeapSortAnimations(arrayCopy);
+        break;
       default:
         return;
     }
@@ -48,14 +58,14 @@ const App = () => {
       setTimeout(() => {
         const [type, i, j] = animation;
 
-        // 🔧 Fix here:
+        // Set yellow comparing bars
         if (type === "compare" || type === "swap") {
           setActiveBars([i, j]);
         } else if (type === "overwrite") {
-          setActiveBars([i]); // only highlight the bar being written
+          setActiveBars([i]);
         }
 
-        // Perform the action
+        // Apply changes
         if (type === "swap") {
           setArray((prev) => {
             const newArr = [...prev];
@@ -74,12 +84,19 @@ const App = () => {
         setTimeout(() => {
           setActiveBars([]);
         }, speed * 0.8);
+
+        // When last animation ends, mark all sorted
+        if (index === animations.length - 1) {
+          setTimeout(() => {
+            setSortedIndices([...Array(array.length).keys()]);
+          }, speed);
+        }
       }, index * speed);
     });
   };
 
   return (
-    <div className="min-h-screen ">
+    <div className="min-h-screen">
       <Navbar
         generateArray={generateArray}
         handleSort={handleSort}
@@ -88,7 +105,27 @@ const App = () => {
         selectedAlgo={selectedAlgo}
         setSelectedAlgo={setSelectedAlgo}
       />
-      <SortingVisualizer array={array} activeBars={activeBars} />
+      <SortingVisualizer
+        array={array}
+        activeBars={activeBars}
+        sortedIndices={sortedIndices}
+      />
+
+      {/* 🟦 LEGEND */}
+      <div className="flex justify-center items-center gap-6 mt-4 text-sm font-medium">
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 bg-green-400 rounded-sm"></div>
+          <span>Unsorted</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 bg-yellow-400 rounded-sm"></div>
+          <span>Comparing</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 bg-purple-500 rounded-sm"></div>
+          <span>Sorted</span>
+        </div>
+      </div>
     </div>
   );
 };

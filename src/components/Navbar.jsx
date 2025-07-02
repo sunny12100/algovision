@@ -10,7 +10,11 @@ const Navbar = ({
 }) => {
   return (
     <div className="flex items-center justify-between px-6 py-4 bg-white shadow-md">
-      <h1 className="text-2xl font-bold">Algo Vision </h1>
+      <img
+        className="w-48"
+        src="https://felix-petersen.github.io/algovision-docs/_images/algovision_logo.png"
+        alt="Algo Vision"
+      />
       <div className="flex items-center gap-4 flex-wrap">
         <select
           value={selectedAlgo}
@@ -21,6 +25,8 @@ const Navbar = ({
           <option value="selection">Selection Sort</option>
           <option value="insertion">Insertion Sort</option>
           <option value="merge">Merge Sort</option>
+          <option value="quick">Quick Sort</option>
+          <option value="heap">Heap Sort</option>
         </select>
         <button
           onClick={generateArray}
