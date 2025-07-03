@@ -8,12 +8,70 @@ import { getMergeSortAnimations } from "./algorithms/mergeSort";
 import { getQuickSortAnimations } from "./algorithms/quickSort";
 import { getHeapSortAnimations } from "./algorithms/heapSort";
 
+const sortingComplexity = {
+  bubble: {
+    name: "Bubble Sort",
+    time: {
+      best: "O(n)",
+      average: "O(n²)",
+      worst: "O(n²)",
+    },
+    space: "O(1)",
+  },
+  selection: {
+    name: "Selection Sort",
+    time: {
+      best: "O(n²)",
+      average: "O(n²)",
+      worst: "O(n²)",
+    },
+    space: "O(1)",
+  },
+  insertion: {
+    name: "Insertion Sort",
+    time: {
+      best: "O(n)",
+      average: "O(n²)",
+      worst: "O(n²)",
+    },
+    space: "O(1)",
+  },
+  merge: {
+    name: "Merge Sort",
+    time: {
+      best: "O(n log n)",
+      average: "O(n log n)",
+      worst: "O(n log n)",
+    },
+    space: "O(n)",
+  },
+  quick: {
+    name: "Quick Sort",
+    time: {
+      best: "O(n log n)",
+      average: "O(n log n)",
+      worst: "O(n²)",
+    },
+    space: "O(log n)",
+  },
+  heap: {
+    name: "Heap Sort",
+    time: {
+      best: "O(n log n)",
+      average: "O(n log n)",
+      worst: "O(n log n)",
+    },
+    space: "O(1)",
+  },
+};
+
 const App = () => {
   const [array, setArray] = useState([]);
-  const [speed, setSpeed] = useState(1000); // in ms
+  const [speed, setSpeed] = useState(100);
   const [selectedAlgo, setSelectedAlgo] = useState("bubble");
   const [activeBars, setActiveBars] = useState([]);
   const [sortedIndices, setSortedIndices] = useState([]);
+  const [showComplexity, setShowComplexity] = useState(false);
 
   const generateArray = () => {
     const newArr = Array.from({ length: 10 }, () =>
@@ -21,6 +79,7 @@ const App = () => {
     );
     setArray(newArr);
     setSortedIndices([]);
+    setShowComplexity(false); // reset complexity box
   };
 
   useEffect(() => {
@@ -58,14 +117,12 @@ const App = () => {
       setTimeout(() => {
         const [type, i, j] = animation;
 
-        // Set yellow comparing bars
         if (type === "compare" || type === "swap") {
           setActiveBars([i, j]);
         } else if (type === "overwrite") {
           setActiveBars([i]);
         }
 
-        // Apply changes
         if (type === "swap") {
           setArray((prev) => {
             const newArr = [...prev];
@@ -80,15 +137,14 @@ const App = () => {
           });
         }
 
-        // Clear highlights
         setTimeout(() => {
           setActiveBars([]);
         }, speed * 0.8);
 
-        // When last animation ends, mark all sorted
         if (index === animations.length - 1) {
           setTimeout(() => {
             setSortedIndices([...Array(array.length).keys()]);
+            setShowComplexity(true); // show complexity box
           }, speed);
         }
       }, index * speed);
@@ -105,11 +161,13 @@ const App = () => {
         selectedAlgo={selectedAlgo}
         setSelectedAlgo={setSelectedAlgo}
       />
-      <SortingVisualizer
-        array={array}
-        activeBars={activeBars}
-        sortedIndices={sortedIndices}
-      />
+      <div className="">
+        <SortingVisualizer
+          array={array}
+          activeBars={activeBars}
+          sortedIndices={sortedIndices}
+        />
+      </div>
 
       {/* 🟦 LEGEND */}
       <div className="flex justify-center items-center gap-6 mt-4 text-sm font-medium">
@@ -126,6 +184,42 @@ const App = () => {
           <span>Sorted</span>
         </div>
       </div>
+
+      {/* 📊 Complexity Info */}
+      {showComplexity && (
+        <div className="mt-6 text-center text-sm text-white bg-gray-800 p-4 rounded-lg shadow-md w-fit mx-auto">
+          <h3 className="text-lg font-semibold mb-2">
+            {sortingComplexity[selectedAlgo].name} Complexity
+          </h3>
+          <div className="flex flex-row gap-1">
+            <p>🕐 Time Complexity:</p>
+            <p>
+              Best:{" "}
+              <span className="font-mono">
+                {sortingComplexity[selectedAlgo].time.best}
+              </span>
+            </p>
+            <p>
+              Average:{" "}
+              <span className="font-mono">
+                {sortingComplexity[selectedAlgo].time.average}
+              </span>
+            </p>
+            <p>
+              Worst:{" "}
+              <span className="font-mono">
+                {sortingComplexity[selectedAlgo].time.worst}
+              </span>
+            </p>
+            <p>
+              💾 Space:{" "}
+              <span className="font-mono">
+                {sortingComplexity[selectedAlgo].space}
+              </span>
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

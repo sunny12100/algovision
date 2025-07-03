@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const SortingVisualizer = ({ array, activeBars, sortedIndices }) => {
   return (
-    <div className="flex items-end justify-center px-4 py-6 gap-[2px] max-w-6xl mx-auto h-[70vh]">
+    <div className="flex items-end justify-center px-4 py-6 gap-[2px] max-w-6xl mx-auto h-[60vh]">
       <AnimatePresence>
         {array.map((value, idx) => {
           const isActive = activeBars.includes(idx);
