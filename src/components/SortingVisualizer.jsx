@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const SortingVisualizer = ({ array, activeBars, sortedIndices }) => {
   return (
-    <div className="flex items-end justify-center px-4 py-6 gap-[2px] max-w-6xl mx-auto h-[60vh]">
+    <div className="flex items-end justify-center px-4 py-6 gap-[2px] max-w-[96vw] md:max-w-6xl mx-auto h-[60vh] overflow-x-auto scrollbar-thin">
       <AnimatePresence>
         {array.map((value, idx) => {
           const isActive = activeBars.includes(idx);
@@ -26,9 +25,11 @@ const SortingVisualizer = ({ array, activeBars, sortedIndices }) => {
               exit={{ opacity: 0 }}
               transition={{ layout: { duration: 0.4 }, duration: 0.2 }}
               style={{ height: `${value}px` }}
-              className={`w-[10px] md:w-[40px] ${barColor} array-bar rounded-sm`}
+              className={`w-[30px] sm:w-[20px] md:w-[40px] ${barColor} array-bar rounded-sm`}
             >
-              <p className="font-medium text-white text-sm px-2">{value}</p>
+              <p className="font-medium text-white text-xs sm:text-sm px-1 text-center">
+                {value}
+              </p>
             </motion.div>
           );
         })}
